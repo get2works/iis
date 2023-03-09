@@ -1,0 +1,1042 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <script type="text/javascript">\
+\
+	const formInneritems = document.querySelector('#regForm');\
+	const formSlides = Array.from(formInneritems.children);\
+	// console.log(formSlides);\
+	const formHeight = formSlides[0].getBoundingClientRect().height;\
+	const getVideoElement = document.querySelector('.form-video');\
+	const getVideoElementIconDiv = document.querySelector('.video-btn');\
+	const getVideoElementIconPause = document.querySelector('.v-on-pause');\
+	const getVideoElementIconPlay = document.querySelector('.v-on-play');\
+	const load_screen = document.getElementById("load_screen");\
+	const getPhoneNumberInput = document.querySelector('.phNo');\
+	const getCountryInput = document.querySelector('.country_code');\
+	const prohibited = ['1111111111','1234567890','0000000000','2222222222','3333333333','4444444444','5555555555','6666666666','7777777777','8888888888','9999999999'];\
+	const getRef = document.querySelector('.ref_username');\
+	var windowWidth = window.innerWidth; \
+	// console.log(formHeight);\
+	const getUrl = window.location.href;\
+	var url = new URL(getUrl);\
+	var getMobileNumber = url.searchParams.get("m");\
+	console.log(getMobileNumber);\
+\
+\
+	console.log(formHeight);\
+	// const getVideoElement = document.querySelector('.form-video');\
+\
+\
+	var video = \{\
+		playPause: function() \{\
+			getVideoElementIconDiv.addEventListener('click', function() \{\
+				if (getVideoElement.paused) \{\
+					getVideoElement.play();\
+					// alert('v-played');\
+					this.classList.remove('show');\
+					getVideoElementIconPause.classList.remove('visible');\
+					getVideoElementIconPlay.classList.add('visible');\
+\
+					if(document.body.contains(document.querySelector('.video-overlay'))) \{\
+						document.querySelector('.video-overlay').remove();	\
+					\}\
+\
+                    //this calls the function above, 3000 milliseconds is 3 seconds, adjust here to make it a longer interval\
+                    if (typeof displayInitialBotton === 'undefined') \{\
+                        setTimeout("showContinueButton()", 1000);\
+                        displayInitialBotton = 0;\
+                    \}\
+				\} else \{\
+					getVideoElement.pause();\
+					// alert('v-paused');\
+					this.classList.add('show');\
+					getVideoElementIconPause.classList.add('visible');\
+					getVideoElementIconPlay.classList.remove('visible');\
+				\}\
+			\})\
+		\},\
+		iconEnableDisable: function() \{\
+			getVideoElement.addEventListener('click', function() \{\
+\
+				var is_OSX = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);\
+\
+				if (is_OSX) \{\
+\
+					if (getVideoElement.paused) \{\
+						getVideoElementIconDiv.classList.remove('show');\
+						getVideoElementIconPause.classList.remove('visible');\
+						getVideoElementIconPlay.classList.add('visible');\
+					\} else \{\
+						getVideoElementIconDiv.classList.add('show');\
+						getVideoElementIconPause.classList.add('visible');\
+						getVideoElementIconPlay.classList.remove('visible');\
+					\}\
+	 \
+				\} else \{\
+\
+					if (getVideoElement.hasAttribute("controls")) \{\
+						if (getVideoElement.paused) \{\
+							getVideoElementIconDiv.classList.remove('show');\
+							getVideoElementIconPause.classList.remove('visible');\
+							getVideoElementIconPlay.classList.add('visible');\
+						\} else \{\
+							getVideoElementIconDiv.classList.add('show');\
+							getVideoElementIconPause.classList.add('visible');\
+							getVideoElementIconPlay.classList.remove('visible');\
+						\}				\
+					\}\
+				\}\
+\
+\
+\
+			\})\
+		\},\
+		autoplay: function() \{\
+			// if (windowWidth <= 1199) \{\
+			// 	getVideoElement.pause();\
+			// 	getVideoElementIcon.classList.add('show');\
+			// \} else \{\
+				getVideoElement.play();\
+				// getVideoElementIcon.classList.remove('show');\
+			// \}\
+		\}\
+	\}\
+	\
+\
+	var is_OSX = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);\
+\
+	if (is_OSX) \{\
+\
+		/*if (getVideoElement.paused) \{\
+			getVideoElementIconDiv.classList.remove('show');\
+			getVideoElementIconPause.classList.remove('visible');\
+			getVideoElementIconPlay.classList.add('visible');\
+		\} else \{\
+			getVideoElementIconDiv.classList.add('show');\
+			getVideoElementIconPause.classList.add('visible');\
+			getVideoElementIconPlay.classList.remove('visible');\
+		\}*/\
+\
+		getVideoElementIconDiv.classList.add('show');\
+		getVideoElementIconPause.classList.add('visible');\
+		getVideoElementIconPlay.classList.remove('visible');\
+	\} else \{\
+        getVideoElementIconDiv.classList.add('show');\
+        getVideoElementIconPause.classList.add('visible');\
+        getVideoElementIconPlay.classList.remove('visible');\
+    \}\
+\
+	var loader = \{\
+		hide: function() \{\
+		    load_screen.classList.add('loader-hide');\
+		\},\
+		show: function() \{\
+			load_screen.classList.remove('loader-hide');\
+		\},\
+		loadedData: function() \{\
+			getVideoElement.addEventListener('loadedmetadata', function() \{\
+				loader.hide();\
+			\})\
+		\}\
+	\}\
+\
+	// function ajax(valueParameters, request, filename) \{\
+	// 	if (window.XMLHttpRequest) \{\
+	// 		xmlhttp = new XMLHttpRequest();\
+	// 	\} else\{\
+	// 		xmlhttp = new ActionXObject('Microsoft.XMLHTTP');\
+	// 	\}\
+	// 	xmlhttp.onreadystatechange = function() \{\
+	// 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) \{\
+	// 			// document.getElementById('success_failed_msg').innerHTML = xmlhttp.responseText;\
+	// 			console.log('success ' + xmlhttp.responseText);\
+	// 		\} else \{\
+	// 			console.log("faliled");\
+	// 		\}\
+	// 	\}\
+\
+	// 	parameters = valueParameters;\
+	// 	// parameters = 'userPhoneNumber='+document.getElementById('name').value+'&user_email='+document.getElementById('email').value;\
+	// 	console.log(parameters);\
+	// 	xmlhttp.open(request, filename ,true);\
+	// 	xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');\
+	// 	xmlhttp.send(parameters);\
+	// \}\
+\
+	console.log(windowWidth);\
+	if (windowWidth <= 1199) \{\
+		document.querySelector('.section-ph-number').classList.add('width-20per')\
+	\}\
+\
+	if (windowWidth > 1199) \{\
+		document.querySelector('.phone-card').classList.add('height-100per')\
+	\} else \{\
+		document.querySelector('.phone-card').classList.remove('height-100per')\
+	\}\
+\
+	// .value;\
+	var error_showing = false;\
+\
+	getPhoneNumberInput.addEventListener('input', function() \{\
+		if (isNaN(this.value)) \{\
+			document.querySelector('.notification-error').innerHTML = 'Please enter numbers only.';\
+			document.querySelector('.notification-error').style.opacity = '1';\
+			document.querySelector('.ph-validation-status').classList.add('btn-disabled');\
+			// document.querySelector('#next_step').style.display = 'none';\
+			var error_showing = true;\
+			return;\
+		\} else if(this.value.length > 10) \{\
+			document.querySelector('.notification-error').innerHTML = 'Please check the phone number length';\
+			document.querySelector('.notification-error').style.opacity = '1';\
+			document.querySelector('.ph-validation-status').classList.add('btn-disabled');\
+			// document.querySelector('#next_step').style.display = 'none';\
+			var error_showing = true;\
+		\} else if(this.value.length == 10) \{\
+\
+			for (var i = 0; i < prohibited.length; i++) \{\
+\
+				if (prohibited[i] === this.value ) \{\
+					document.querySelector('.notification-error').innerHTML = 'You have entered a prohibited number';\
+					document.querySelector('.notification-error').style.opacity = '1';\
+					document.querySelector('.ph-validation-status').classList.add('btn-disabled');\
+					return;\
+				\}\
+			\}\
+\
+			document.querySelector('.notification-error').innerHTML = 'Thanks! Press Next Step.';\
+			document.querySelector('.notification-error').style.opacity = '1';\
+			document.querySelector('.ph-validation-status').classList.remove('btn-disabled');\
+		\} else if(this.value == "0000000") \{\
+			document.querySelector('.notification-error').innerHTML = 'Please enter a valid phone number.';\
+			document.querySelector('.notification-error').style.opacity = '1';\
+			document.querySelector('.ph-validation-status').classList.add('btn-disabled');\
+			// document.querySelector('#next_step').style.display = 'none';\
+			var error_showing = true;\
+		\} else \{\
+			document.querySelector('.notification-error').style.opacity = '0';\
+			document.querySelector('.ph-validation-status').classList.add('btn-disabled');\
+			// document.querySelector('#next_step').style.display = 'inline';\
+		\}\
+	\})\
+\
+	var x, i, j, selElmnt, a, b, c;\
+	/* Look for any elements with the class "custom-select": */\
+	x = document.getElementsByClassName("custom-select");\
+	for (i = 0; i < x.length; i++) \{\
+	  selElmnt = x[i].getElementsByTagName("select")[0];\
+	  /* For each element, create a new DIV that will act as the selected item: */\
+	  a = document.createElement("DIV");\
+	  a.setAttribute("class", "select-selected");\
+	  a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;\
+	  x[i].appendChild(a);\
+	  /* For each element, create a new DIV that will contain the option list: */\
+	  b = document.createElement("DIV");\
+	  b.setAttribute("class", "select-items select-hide");\
+	  for (j = 1; j < selElmnt.length; j++) \{\
+	    /* For each option in the original select element,\
+	    create a new DIV that will act as an option item: */\
+	    c = document.createElement("DIV");\
+	    c.innerHTML = selElmnt.options[j].innerHTML;\
+	    c.addEventListener("click", function(e) \{\
+	        /* When an item is clicked, update the original select box,\
+	        and the selected item: */\
+	        var y, i, k, s, h;\
+	        // console.log('sfsd');\
+	        s = this.parentNode.parentNode.getElementsByTagName("select")[0];\
+	        h = this.parentNode.previousSibling;\
+	        for (i = 0; i < s.length; i++) \{\
+	          if (s.options[i].innerHTML == this.innerHTML) \{\
+	            s.selectedIndex = i;\
+	            // console.log(h.classList.add('has-Value'));\
+	            // h.innerHTML = '<img src="' + this.innerHTML +'">';\
+	            if (s.options[i].getAttribute('data-img') === '+000') \{\
+		            h.innerHTML = s.options[i].getAttribute('data-img');\
+		            h.classList.remove('has-value');\
+	            \} else \{\
+		            h.innerHTML = '<img src="assets/img/flags/' + s.options[i].getAttribute('data-img') +'.png">';\
+		            h.classList.add('has-value');\
+		            document.querySelector('.custom-select').style.width = '70px'\
+	            \}\
+	            console.log(this.innerHTML);\
+	            console.log(s.options[i].getAttribute('data-img'));\
+	            y = this.parentNode.getElementsByClassName("same-as-selected");\
+	            for (k = 0; k < y.length; k++) \{\
+	              y[k].removeAttribute("class");\
+	            \}\
+	            this.setAttribute("class", "same-as-selected");\
+	            break;\
+	          \}\
+	        \}\
+	        h.click();\
+	    \});\
+	    b.appendChild(c);\
+	  \}\
+	  x[i].appendChild(b);\
+	  a.addEventListener("click", function(e) \{\
+	    /* When the select box is clicked, close any other select boxes,\
+	    and open/close the current select box: */\
+	    e.stopPropagation();\
+	    closeAllSelect(this);\
+	    this.nextSibling.classList.toggle("select-hide");\
+	    this.classList.toggle("select-arrow-active");\
+	  \});\
+	\}\
+\
+/*function string_checker(value) \{\
+  const prohibited = ['1111111111','1234567890','0000000000','2222222222','3333333333','4444444444','5555555555','6666666666','7777777777','8888888888','9999999999'];\
+// Modern Browser\
+prohibited.includes(value); // true\
+// Older Browser\
+prohibited.indexOf(value) !== -1; // true\
+\}*/\
+\
+	function closeAllSelect(elmnt) \{\
+	  /* A function that will close all select boxes in the document,\
+	  except the current select box: */\
+	  var x, y, i, arrNo = [];\
+	  x = document.getElementsByClassName("select-items");\
+	  y = document.getElementsByClassName("select-selected");\
+	  for (i = 0; i < y.length; i++) \{\
+	    if (elmnt == y[i]) \{\
+	      arrNo.push(i)\
+	    \} else \{\
+	      y[i].classList.remove("select-arrow-active");\
+	    \}\
+	  \}\
+	  for (i = 0; i < x.length; i++) \{\
+	    if (arrNo.indexOf(i)) \{\
+	      x[i].classList.add("select-hide");\
+	    \}\
+	  \}\
+	\}\
+\
+	/* If the user clicks anywhere outside the select box,\
+	then close all select boxes: */\
+	document.addEventListener("click", closeAllSelect);\
+\
+\
+\
+	document.querySelectorAll('.tab').forEach(function(slide, index) \{\
+		if (windowWidth <= 1199) \{\
+			slide.style.top = 682.065 * index + 'px';\
+			// slide.style.top = formHeight * index + 'px';\
+		\} else \{\
+			slide.style.top = formHeight * index + 'px';\
+		\}\
+	\})\
+	function loader() \{\
+	    var load_screen = document.getElementById("load_screen");\
+	    // document.removeChild(load_screen);\
+	    load_screen.classList.add('loader-hide');\
+	\}\
+\
+	loader.loadedData();\
+\
+\
+	function slideMovement(formInneritems, getCurrentSlide, tragetSlide) \{\
+		// console.log(tragetSlide.style.left)\
+		// console.log()\
+		formInneritems.style.transform = 'translateY(-' + tragetSlide.style.top + ')';\
+		getCurrentSlide.classList.remove('current-slide');\
+		// console.log(tragetSlide.style.top)\
+		tragetSlide.classList.add('current-slide');\
+	\}\
+\
+	function slide(optionValue, $url) \{\
+		if ($url != '') \{\
+			if ($url === 'v-remove') \{\
+				getVideoElement.src = '';\
+			\} else \{\
+				loader.show();\
+				setVideo = getVideoElement.src = $url;\
+				loader.loadedData();\
+				video.autoplay();\
+			\}\
+		\}\
+		// console.log(getVideoElement.querySelector('source').setAttribute("src", $url));\
+\
+		const getCurrentSlide = formInneritems.querySelector('.current-slide');\
+		// const nextSlide = getCurrentSlide.nextElementSibling;\
+		const nextSlide = document.querySelector("[data-form='"+ optionValue +"']");\
+		console.log(nextSlide);\
+		// const currentDot = formNav.querySelector('.current-slide');\
+		// const NextDot = currentDot.nextElementSibling;\
+		var nextIndex;\
+		for (var i = 1; i < formSlides.length; ++i) \{\
+		    if (formSlides[i] === nextSlide) \{\
+		        nextIndex = i;\
+		        console.log(nextSlide);\
+		        console.log(formSlides.length);\
+		        console.log(nextIndex);\
+		        break;\
+		    \}\
+		\}\
+\
+		slideMovement(formInneritems, getCurrentSlide, nextSlide);\
+	\}\
+\
+	function sendUserValue(parameters, request, filename) \{\
+		if (window.XMLHttpRequest) \{\
+			xmlhttp = new XMLHttpRequest();\
+		\} else\{\
+			xmlhttp = new ActionXObject('Microsoft.XMLHTTP');\
+		\}\
+		xmlhttp.onreadystatechange = function() \{\
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) \{\
+				// document.getElementById('success_failed_msg').innerHTML = xmlhttp.responseText;\
+				console.log('success ' + xmlhttp.responseText);\
+			\} else \{\
+				console.log("faliled");\
+			\}\
+		\}\
+\
+		// parameters = 'countryCode='+getCountryInput.value+'&mobile='+getPhoneNumberInput.value;\
+		parameters = parameters;\
+		// parameters = 'userPhoneNumber='+document.getElementById('name').value+'&user_email='+document.getElementById('email').value;\
+		console.log("Send User Value Params: " + parameters);\
+		xmlhttp.open(request, filename, true);\
+		xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');\
+		xmlhttp.send(parameters);\
+	\}\
+\
+	optionButton = document.querySelectorAll('.option_btn');\
+\
+	for (var i = 0; i < optionButton.length; i++) \{\
+		optionButton[i].addEventListener('click', function() \{\
+\
+			// alert('clciked')\
+\
+			console.log(this);\
+\
+			console.log(this.getAttribute('data-option'));\
+\
+			getOptionAttribute = this.getAttribute('data-option');\
+			getPrevFormAttribute = this.closest(".tab").getAttribute('data-form');\
+\
+			getValue = this.getAttribute('data-value');\
+			console.log(getValue);\
+\
+			getOptionAttribute.substr(0,getOptionAttribute.indexOf('-')); // "72"\
+			optionValue = getOptionAttribute.substr(getOptionAttribute.indexOf('-')+1); // "tocirah sneab"\
+\
+			console.log(optionValue);\
+\
+\
+			switch(optionValue) \{\
+\
+				/*\
+					=============================\
+					Getting Paid $100 Over & Over\
+					==============================\
+				*/\
+\
+				case '2':\
+					if (getMobileNumber === null) \{\
+						document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+						// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+						\
+				    	slide(optionValue, '');\
+					\} else \{\
+						document.querySelector("[data-form='3']").classList.remove('tab_visibility-hidden');\
+				    	slide('3', 'https://texbotvideos.100dollars.ai/iis/video2.mp4');\
+					\}\
+\
+					document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    	break;\
+\
+			    case '3':\
+					if (getPhoneNumberInput.value == '') \{\
+						return;\
+					\} else if (getPhoneNumberInput.value.length > 10) \{\
+						return;\
+					\} else if (getPhoneNumberInput.value.length < 10) \{\
+						return;\
+					\} else if (getPhoneNumberInput.value.length == 10) \{\
+\
+						if (prohibited[0] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[1] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[2] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[3] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[4] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[5] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[6] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[7] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[8] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[9] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else if (prohibited[10] == getPhoneNumberInput.value) \{\
+							return;\
+						\} else \{\
+\
+							if(error_showing) \{\
+								console.log("ERROR IS SHOWING! SHOULD NOT CONTINUE!");\
+							\}\
+							\
+							document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+							\
+							if (window.XMLHttpRequest) \{\
+								xmlhttp = new XMLHttpRequest();\
+							\} else\{\
+								xmlhttp = new ActionXObject('Microsoft.XMLHTTP');\
+							\}\
+							xmlhttp.onreadystatechange = function() \{\
+								if (xmlhttp.readyState == 4 && xmlhttp.status == 200) \{\
+									console.log('success ' + xmlhttp.responseText);\
+								\} else \{\
+									console.log("faliled onreadystatechange");\
+								\}\
+							\}\
+\
+							parameters = 'ref='+getRef.value+'&country_code='+getCountryInput\
+							.value+'&mobile='+getPhoneNumberInput.value;\
+							console.log(parameters);\
+							xmlhttp.open('POST','optin_iis.php',true);\
+							xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');\
+							xmlhttp.send(parameters);\
+							\
+							slide(optionValue, 'https://texbotvideos.100dollars.ai/iis/video2.mp4');\
+							document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+						\
+\
+						\}\
+\
+					\}\
+					\
+			    	break;\
+					\
+				\
+\
+			  	case '3-1':\
+				console.log('Show access code');\
+				console.log('Option Value: ' + optionValue + 'Show access code');\
+				document.querySelector("[data-form='2-6']").classList.remove('tab_visibility-hidden');\
+				slide('2-6', '');\
+				document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+				break;\
+				\
+				case '9':\
+				document.querySelector("[data-form='9-1']").classList.remove('tab_visibility-hidden');\
+				\
+				if (window.XMLHttpRequest) \{\
+					xmlhttp = new XMLHttpRequest();\
+				\} else\{\
+					xmlhttp = new ActionXObject('Microsoft.XMLHTTP');\
+				\}\
+				xmlhttp.onreadystatechange = function() \{\
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) \{\
+						console.log('success ' + xmlhttp.responseText);\
+					\} else \{\
+						console.log("faliled onreadystatechange");\
+					\}\
+				\}\
+\
+				parameters = 'ref='+getRef.value+'&country_code='+getCountryInput\
+				.value+'&mobile='+getPhoneNumberInput.value;\
+				console.log(parameters);\
+				xmlhttp.open('POST','check_code_iis.php',true);\
+				xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');\
+				xmlhttp.send(parameters);\
+				document.querySelector("[data-form='2-6']").classList.add('tab_visibility-hidden');\
+				slide('9-1', 'https://texbotvideos.100dollars.ai/iis/video3.mp4');\
+				\
+				break;\
+				\
+				\
+				case '4-1':\
+				console.log(optionValue);\
+				console.log('its 4-1');\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				//sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=A&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/iis/video4.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			// Yup! I have $100 -> 4-1-1\
+\
+			case '4-1-1':\
+				///console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=A&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/iis/video4.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-1-1':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/iis/video6.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-1-2':\
+			    console.log('Staying a FREE member');\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/iis/video4B.mp4');\
+				document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+				break;\
+\
+			case '4-1-1-1-1':\
+			    console.log('Redirect to checkout page');\
+			    window.location = "https://my.internetincomesystem.com/pay/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+\
+			case '4-1-1-1-2':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Leads+%26+1+Up+Close+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+\
+			case '4-1-1-1-2-1':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+\
+\
+			//  I Don't have $100 -> 4-1-2\
+\
+			// case '4-1-2':\
+			// 	console.log(optionValue);\
+			//     document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+			\
+			//     slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Do+Not+Have+100+-+USE+THIS.mp4');\
+			//     document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			//     break;\
+\
+			case '4-1-2':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=B&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/iis/video5.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-2-1-1':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				//sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=B&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/I+Have+10+-+USE+THIS.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-2-1-1-1':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=C&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Yes+100-USETHIS.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-2-1-1-1-1':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Money+-+Demo+to+Close+-+FINAL+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-2-1-1-1-2':\
+				console.log('Redirect to Login Page');\
+				window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+				document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-2-1-1-1-1-1':\
+				console.log('Redirect to Login Page');\
+				window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+				document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-2-1-1-1-1-2':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Leads+%26+1+Up+Close+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+			case '4-1-2-1-1-1-1-2-1':\
+				console.log('Redirect to Login Page');\
+				window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+				document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+\
+			//  I'm not interested -> 4-1-3\
+\
+			case '4-1-3':\
+				console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=D&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, '');\
+			    window.location = "https://100dollars.ai/no.php?m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+			    break;\
+\
+\
+			/*\
+				=============================\
+				Using AVA in my own bussiness\
+				=============================\
+			*/\
+			case '3-2':\
+				console.log(optionValue);\
+		    	document.querySelector("[data-form='5']").classList.remove('tab_visibility-hidden');\
+				\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=B&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+				\
+				slide('5', 'https://texbotvideos.100dollars.ai/iis/video2B.mp4');\
+		    	document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+\
+		   	case '5-1':\
+		   		console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, '');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    // Yup! I have $100 -> 5-1-1\
+		    case '5-1-1':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=C&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Yes+100-USETHIS.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		   	case '5-1-1-1':\
+		   		console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Money+-+Demo+to+Close+-+FINAL+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '5-1-1-2':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '5-1-1-1-1':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+\
+		   	// I Don't have $100 -> 5-1-2\
+		   	case '5-1-2':\
+		   		console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=512&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'v-remove');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+\
+			    document.querySelector(".section-video").style.width = 0;\
+			    document.querySelector(".section-video").style.height = '100vh';\
+		    	break;\
+\
+\
+		    // I'm not interested -> 5-1-3\
+		   	case '5-1-3':\
+		   		console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+				\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=513&val='+getValue, 'POST', 'save_lead_choice.php');\
+\
+			    slide(optionValue, 'v-remove');\
+			    document.querySelector(".section-video").style.width = 0;\
+			    document.querySelector(".section-video").style.height = '100vh';\
+\
+			    window.location = "https://100dollars.ai/no.php?m=" + getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+\
+\
+\
+		    /*\
+				=============================\
+						Both\
+				=============================\
+			*/\
+			case '3-3':\
+				console.log(optionValue);\
+		    	document.querySelector("[data-form='6']").classList.remove('tab_visibility-hidden');\
+				\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+\
+				slide('6', 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Intro+-+USE+THIS.mp4');\
+		    	document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+After+income+disclosure+-+USE+THIS.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    //  Yup! I have $1000 -> 6-1-1\
+\
+		    case '6-1-1':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('ref='+getRef+'&mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=611&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Yes+100-USETHIS.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-1-1':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Money+-+Demo+to+Close+-+FINAL+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-1-2':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-1-1-1':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-1-1-2':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Leads+%26+1+Up+Close+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-1-1-2-1':\
+			    console.log('Redirect to Join Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+\
+		    //  I Don't have $100 -> 6-1-2\
+\
+		    // case '6-1-2':\
+		    // 	console.log(optionValue);\
+			   //  document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+			   \
+			   //  slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Do+Not+Have+100+-+USE+THIS.mp4');\
+			   //  document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    // 	break;\
+\
+		    case '6-1-2':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=B&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/no100NEWUSETHIS.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-2-1-1':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/I+Have+10+-+USE+THIS.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-2-1-1-1':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, '');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-2-1-1-1-1':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Money+-+Demo+to+Close+-+FINAL+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-2-1-1-1-2':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-2-1-1-1-1-1':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-2-1-1-1-1-2':\
+		    	console.log(optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'https://texbotvideos.100dollars.ai/tourvideos/Make+Money+-+Leads+%26+1+Up+Close+-+USE+THIS2.mp4');\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+		    case '6-1-2-1-1-1-1-2-1':\
+			    console.log('Redirect to Login Page');\
+			    window.location = "https://my.internetincomesystem.com/join/?ref=<?=$_GET['ref'];?>&m=" + getCountryInput.value+getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+\
+		    //  I'm not interested -> 6-1-3\
+\
+		    case '6-1-3':\
+		    	console.log("Option Value: " + optionValue);\
+				document.querySelector("[data-form='"+ optionValue +"']").classList.remove('tab_visibility-hidden');\
+\
+				// ajax('getValue='+getValue, 'POST', 'save_lead_choice.php');\
+				sendUserValue('ref='+getRef+'&mobile='+getCountryInput.value+getPhoneNumberInput.value+'&option=613&val='+getValue, 'POST', 'save_lead_choice.php');\
+				\
+			    slide(optionValue, 'v-remove');\
+\
+			    document.querySelector(".section-video").style.width = 0;\
+			    document.querySelector(".section-video").style.height = '100vh';\
+			    window.location = "https://tour.internetincomesystem.com/no.php?m=" + getPhoneNumberInput.value;\
+			    document.querySelector("[data-form='"+ getPrevFormAttribute +"']").classList.add('tab_visibility-hidden');\
+		    	break;\
+\
+\
+\
+			// case '':\
+			    // break;\
+\
+		  	default:\
+		    // code block\
+		    console.log('Option not defined');\
+			\}\
+\
+			\
+\
+		\})\
+	\}\
+\
+\
+	video.playPause();\
+	video.autoplay();\
+	video.iconEnableDisable();\
+\
+    //document.querySelector("[data-option='2']").style.display = "none";\
+    document.querySelector("[data-option='2']").style.opacity = 0;\
+    function showContinueButton() \{\
+        //document.querySelector("[data-option='2']").style.display = "inline-block";\
+        fadeIn(document.querySelector("[data-option='2']"), 3000);\
+    \}\
+\
+    function fadeIn(elem, ms) \{\
+        elem.style.opacity = 0;\
+\
+        if (ms) \{\
+            let opacity = 0;\
+            const timer = setInterval(function() \{\
+            opacity += 50 / ms;\
+            if (opacity >= 1) \{\
+                clearInterval(timer);\
+                opacity = 1;\
+            \}\
+            elem.style.opacity = opacity;\
+            \}, 50);\
+        \} else \{\
+            elem.style.opacity = 1;\
+        \}\
+    \}\
+</script>}
